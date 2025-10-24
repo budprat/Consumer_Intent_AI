@@ -56,8 +56,19 @@ class SSRExecutor:
         Args:
             api_key: OpenAI API key (or use OPENAI_API_KEY env var)
         """
+        from src.core.ssr_engine import SSRConfig
+        
         self.consumer_generator = ConsumerGenerator(api_key=api_key)
-        self.ssr_engine = SSREngine(api_key=api_key)
+        
+        # Use optimized SSR config with appropriate reference sets
+        # Exclude generic paper sets which cause convergence to 3.0
+        config = SSRConfig(
+            temperature=0.1,  # Sharp distributions
+            use_multi_set_averaging=False,  # Don't average to avoid convergence
+            reference_set_ids=['value_conscious', 'premium_buyer', 'necessity_based', 
+                             'emotional_appeal', 'innovation_focused']  # Use meaningful sets only
+        )
+        self.ssr_engine = SSREngine(config=config, api_key=api_key)
 
     def execute_survey(
         self,

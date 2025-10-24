@@ -1,0 +1,17 @@
+id: paper_set_3
+version: '1.0'
+domain: consumer_products
+language: en
+description: Appeal-based statements (paper reference set 3)
+created_at: '2025-10-18T22:55:59.895536'
+statements:
+- rating: 1
+  text: This doesn't appeal to me.
+- rating: 2
+  text: This product has limited appeal.
+- rating: 3
+  text: I have mixed feelings about this.
+- rating: 4
+  text: This product appeals to me.
+- rating: 5
+  text: This really appeals to me.

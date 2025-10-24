@@ -1,0 +1,17 @@
+id: paper_set_5
+version: '1.0'
+domain: consumer_products
+language: en
+description: Value-based statements (paper reference set 5)
+created_at: '2025-10-18T22:55:59.895554'
+statements:
+- rating: 1
+  text: This doesn't seem worth it to me.
+- rating: 2
+  text: I question the value of this product.
+- rating: 3
+  text: I'm uncertain about the value here.
+- rating: 4
+  text: This seems like a good value.
+- rating: 5
+  text: This is excellent value for me.

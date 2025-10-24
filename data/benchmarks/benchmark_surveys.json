@@ -1,0 +1,848 @@
+{
+  "metadata": {
+    "description": "57 benchmark surveys for SSR methodology validation",
+    "methodology": "Based on Human Purchase Intent SSR paper",
+    "categories": ["Electronics", "Fashion", "Home Goods", "Food & Beverage", "Services"],
+    "price_tiers": ["budget", "mid-range", "premium", "luxury"],
+    "creation_date": "2025-10-18",
+    "version": "1.0",
+    "total_surveys": 57
+  },
+  "surveys": {
+    "electronics": [
+      {
+        "survey_id": "elec_001",
+        "product_name": "Budget Wireless Earbuds",
+        "product_description": "Basic wireless earbuds with 6-hour battery life, Bluetooth 5.0, and touch controls. Simple design, adequate sound quality for calls and music.",
+        "category": "Electronics",
+        "subcategory": "Audio",
+        "price_point": 29.99,
+        "price_tier": "budget",
+        "target_demographic": {
+          "age_range": "18-35",
+          "income_level": "low_to_middle",
+          "tech_savvy": false
+        }
+      },
+      {
+        "survey_id": "elec_002",
+        "product_name": "Mid-Range Noise Cancelling Headphones",
+        "product_description": "Over-ear headphones with active noise cancellation, 30-hour battery, comfortable padding, and balanced sound profile. Good for commuting and focus work.",
+        "category": "Electronics",
+        "subcategory": "Audio",
+        "price_point": 149.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "25-45",
+          "income_level": "middle",
+          "tech_savvy": true
+        }
+      },
+      {
+        "survey_id": "elec_003",
+        "product_name": "Premium Wireless Headphones",
+        "product_description": "High-end over-ear headphones with adaptive ANC, 40-hour battery, premium materials, spatial audio, and audiophile-grade drivers.",
+        "category": "Electronics",
+        "subcategory": "Audio",
+        "price_point": 349.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "25-50",
+          "income_level": "upper_middle",
+          "tech_savvy": true
+        }
+      },
+      {
+        "survey_id": "elec_004",
+        "product_name": "Budget Fitness Tracker",
+        "product_description": "Basic fitness band tracking steps, heart rate, and sleep. Water-resistant, 7-day battery, connects to smartphone app.",
+        "category": "Electronics",
+        "subcategory": "Wearables",
+        "price_point": 39.99,
+        "price_tier": "budget",
+        "target_demographic": {
+          "age_range": "20-40",
+          "income_level": "low_to_middle",
+          "fitness_oriented": true
+        }
+      },
+      {
+        "survey_id": "elec_005",
+        "product_name": "Mid-Range Smartwatch",
+        "product_description": "Full-featured smartwatch with GPS, heart rate monitoring, workout tracking, notifications, and 2-day battery. Compatible with iOS and Android.",
+        "category": "Electronics",
+        "subcategory": "Wearables",
+        "price_point": 249.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "25-50",
+          "income_level": "middle",
+          "tech_savvy": true,
+          "fitness_oriented": true
+        }
+      },
+      {
+        "survey_id": "elec_006",
+        "product_name": "Premium Smartwatch",
+        "product_description": "Advanced smartwatch with ECG, blood oxygen monitoring, always-on display, premium materials (titanium/sapphire), and extensive health tracking.",
+        "category": "Electronics",
+        "subcategory": "Wearables",
+        "price_point": 699.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "30-55",
+          "income_level": "upper_middle_to_high",
+          "health_conscious": true,
+          "tech_savvy": true
+        }
+      },
+      {
+        "survey_id": "elec_007",
+        "product_name": "Budget Smartphone",
+        "product_description": "Entry-level smartphone with 6.5-inch HD+ display, basic camera, 64GB storage, and decent battery life. Good for calls, messaging, and basic apps.",
+        "category": "Electronics",
+        "subcategory": "Mobile",
+        "price_point": 199.99,
+        "price_tier": "budget",
+        "target_demographic": {
+          "age_range": "18-60",
+          "income_level": "low_to_middle",
+          "tech_savvy": false
+        }
+      },
+      {
+        "survey_id": "elec_008",
+        "product_name": "Mid-Range Smartphone",
+        "product_description": "Well-balanced smartphone with OLED display, capable camera system, 128GB storage, fast charging, and 5G connectivity.",
+        "category": "Electronics",
+        "subcategory": "Mobile",
+        "price_point": 499.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "20-50",
+          "income_level": "middle",
+          "tech_savvy": true
+        }
+      },
+      {
+        "survey_id": "elec_009",
+        "product_name": "Flagship Smartphone",
+        "product_description": "Top-tier smartphone with 120Hz AMOLED display, pro-grade camera system with telephoto and ultra-wide, 256GB storage, premium build, and cutting-edge processor.",
+        "category": "Electronics",
+        "subcategory": "Mobile",
+        "price_point": 1299.99,
+        "price_tier": "luxury",
+        "target_demographic": {
+          "age_range": "25-45",
+          "income_level": "high",
+          "tech_savvy": true,
+          "early_adopter": true
+        }
+      },
+      {
+        "survey_id": "elec_010",
+        "product_name": "Budget Laptop",
+        "product_description": "Basic laptop for web browsing, email, and documents. 14-inch HD screen, 4GB RAM, 128GB SSD, suitable for students and light users.",
+        "category": "Electronics",
+        "subcategory": "Computing",
+        "price_point": 349.99,
+        "price_tier": "budget",
+        "target_demographic": {
+          "age_range": "18-65",
+          "income_level": "low_to_middle",
+          "occupation": "student_or_light_user"
+        }
+      },
+      {
+        "survey_id": "elec_011",
+        "product_name": "Mid-Range Laptop",
+        "product_description": "Versatile laptop with Full HD display, 8GB RAM, 512GB SSD, good battery life. Handles productivity, media, and light creative work.",
+        "category": "Electronics",
+        "subcategory": "Computing",
+        "price_point": 799.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "22-55",
+          "income_level": "middle",
+          "occupation": "professional"
+        }
+      },
+      {
+        "survey_id": "elec_012",
+        "product_name": "Premium Gaming Laptop",
+        "product_description": "High-performance gaming laptop with RTX graphics, 16GB RAM, 1TB SSD, 144Hz display, and RGB keyboard. Handles AAA games and content creation.",
+        "category": "Electronics",
+        "subcategory": "Computing",
+        "price_point": 1899.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "18-35",
+          "income_level": "upper_middle",
+          "gaming_enthusiast": true
+        }
+      }
+    ],
+    "fashion": [
+      {
+        "survey_id": "fash_001",
+        "product_name": "Basic Cotton T-Shirt",
+        "product_description": "100% cotton crew neck t-shirt in solid colors. Comfortable, breathable, machine washable. Everyday essential.",
+        "category": "Fashion",
+        "subcategory": "Casual Wear",
+        "price_point": 14.99,
+        "price_tier": "budget",
+        "target_demographic": {
+          "age_range": "18-65",
+          "income_level": "low_to_middle",
+          "fashion_conscious": false
+        }
+      },
+      {
+        "survey_id": "fash_002",
+        "product_name": "Designer Jeans",
+        "product_description": "Premium denim jeans with modern fit, quality stitching, and signature branding. Durable and stylish.",
+        "category": "Fashion",
+        "subcategory": "Casual Wear",
+        "price_point": 189.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "20-45",
+          "income_level": "upper_middle",
+          "fashion_conscious": true
+        }
+      },
+      {
+        "survey_id": "fash_003",
+        "product_name": "Luxury Designer Handbag",
+        "product_description": "Handcrafted Italian leather handbag from renowned designer. Timeless style, impeccable craftsmanship, iconic branding.",
+        "category": "Fashion",
+        "subcategory": "Accessories",
+        "price_point": 2499.99,
+        "price_tier": "luxury",
+        "target_demographic": {
+          "age_range": "30-60",
+          "income_level": "high",
+          "fashion_conscious": true,
+          "status_conscious": true
+        }
+      },
+      {
+        "survey_id": "fash_004",
+        "product_name": "Athletic Running Shoes",
+        "product_description": "Mid-range running shoes with cushioning, breathable mesh, and good arch support. Suitable for regular runners.",
+        "category": "Fashion",
+        "subcategory": "Footwear",
+        "price_point": 119.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "20-50",
+          "income_level": "middle",
+          "fitness_oriented": true
+        }
+      },
+      {
+        "survey_id": "fash_005",
+        "product_name": "Luxury Dress Watch",
+        "product_description": "Swiss-made automatic watch with sapphire crystal, leather strap, and elegant design. Heirloom quality timepiece.",
+        "category": "Fashion",
+        "subcategory": "Accessories",
+        "price_point": 4999.99,
+        "price_tier": "luxury",
+        "target_demographic": {
+          "age_range": "35-65",
+          "income_level": "high",
+          "status_conscious": true,
+          "appreciates_craftsmanship": true
+        }
+      },
+      {
+        "survey_id": "fash_006",
+        "product_name": "Business Casual Dress Shirt",
+        "product_description": "Wrinkle-resistant dress shirt in classic colors. Professional appearance, comfortable fit, easy care.",
+        "category": "Fashion",
+        "subcategory": "Professional Wear",
+        "price_point": 49.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "25-60",
+          "income_level": "middle",
+          "occupation": "professional"
+        }
+      },
+      {
+        "survey_id": "fash_007",
+        "product_name": "Premium Leather Jacket",
+        "product_description": "Genuine leather jacket with quality hardware, comfortable lining, and timeless style. Built to last decades.",
+        "category": "Fashion",
+        "subcategory": "Outerwear",
+        "price_point": 599.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "25-55",
+          "income_level": "upper_middle",
+          "fashion_conscious": true
+        }
+      },
+      {
+        "survey_id": "fash_008",
+        "product_name": "Fast Fashion Dress",
+        "product_description": "Trendy dress in current season styles. Affordable, on-trend, suitable for occasional wear.",
+        "category": "Fashion",
+        "subcategory": "Formal Wear",
+        "price_point": 39.99,
+        "price_tier": "budget",
+        "target_demographic": {
+          "age_range": "18-35",
+          "income_level": "low_to_middle",
+          "fashion_conscious": true,
+          "trend_follower": true
+        }
+      },
+      {
+        "survey_id": "fash_009",
+        "product_name": "Designer Sunglasses",
+        "product_description": "Premium sunglasses with UV protection, quality lenses, and iconic brand styling. Fashion statement and eye protection.",
+        "category": "Fashion",
+        "subcategory": "Accessories",
+        "price_point": 299.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "25-50",
+          "income_level": "upper_middle",
+          "fashion_conscious": true,
+          "outdoor_lifestyle": true
+        }
+      },
+      {
+        "survey_id": "fash_010",
+        "product_name": "Sustainable Activewear Set",
+        "product_description": "Eco-friendly workout clothing made from recycled materials. Moisture-wicking, comfortable, environmentally responsible.",
+        "category": "Fashion",
+        "subcategory": "Athletic Wear",
+        "price_point": 89.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "22-45",
+          "income_level": "middle",
+          "fitness_oriented": true,
+          "environmentally_conscious": true
+        }
+      },
+      {
+        "survey_id": "fash_011",
+        "product_name": "Luxury Cashmere Sweater",
+        "product_description": "100% cashmere sweater with exquisite softness, elegant drape, and timeless design. Ultimate luxury comfort.",
+        "category": "Fashion",
+        "subcategory": "Knitwear",
+        "price_point": 799.99,
+        "price_tier": "luxury",
+        "target_demographic": {
+          "age_range": "35-65",
+          "income_level": "high",
+          "appreciates_quality": true
+        }
+      }
+    ],
+    "home_goods": [
+      {
+        "survey_id": "home_001",
+        "product_name": "Budget Cookware Set",
+        "product_description": "Basic 10-piece nonstick cookware set. Suitable for everyday cooking, easy to clean, affordable starter set.",
+        "category": "Home Goods",
+        "subcategory": "Kitchen",
+        "price_point": 79.99,
+        "price_tier": "budget",
+        "target_demographic": {
+          "age_range": "20-40",
+          "income_level": "low_to_middle",
+          "cooking_frequency": "occasional"
+        }
+      },
+      {
+        "survey_id": "home_002",
+        "product_name": "Premium Cast Iron Cookware",
+        "product_description": "Professional-grade cast iron cookware set. Excellent heat retention, naturally nonstick when seasoned, heirloom quality.",
+        "category": "Home Goods",
+        "subcategory": "Kitchen",
+        "price_point": 399.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "30-60",
+          "income_level": "upper_middle",
+          "cooking_enthusiast": true
+        }
+      },
+      {
+        "survey_id": "home_003",
+        "product_name": "Smart Home Security System",
+        "product_description": "Complete wireless security system with cameras, sensors, smartphone control, and professional monitoring option.",
+        "category": "Home Goods",
+        "subcategory": "Security",
+        "price_point": 499.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "30-60",
+          "income_level": "middle_to_upper",
+          "homeowner": true,
+          "tech_savvy": true
+        }
+      },
+      {
+        "survey_id": "home_004",
+        "product_name": "Budget Vacuum Cleaner",
+        "product_description": "Basic upright vacuum with decent suction, washable filter, and simple operation. Handles routine cleaning.",
+        "category": "Home Goods",
+        "subcategory": "Cleaning",
+        "price_point": 89.99,
+        "price_tier": "budget",
+        "target_demographic": {
+          "age_range": "25-65",
+          "income_level": "low_to_middle",
+          "practical_buyer": true
+        }
+      },
+      {
+        "survey_id": "home_005",
+        "product_name": "Robot Vacuum Cleaner",
+        "product_description": "Smart robot vacuum with mapping, scheduling, and self-emptying. Hands-free floor cleaning with app control.",
+        "category": "Home Goods",
+        "subcategory": "Cleaning",
+        "price_point": 599.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "30-55",
+          "income_level": "upper_middle",
+          "tech_savvy": true,
+          "time_constrained": true
+        }
+      },
+      {
+        "survey_id": "home_006",
+        "product_name": "Luxury Bedding Set",
+        "product_description": "Egyptian cotton sheets with high thread count, duvet cover, and pillowcases. Hotel-quality comfort and durability.",
+        "category": "Home Goods",
+        "subcategory": "Bedroom",
+        "price_point": 399.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "30-65",
+          "income_level": "upper_middle_to_high",
+          "quality_conscious": true
+        }
+      },
+      {
+        "survey_id": "home_007",
+        "product_name": "Ergonomic Office Chair",
+        "product_description": "Adjustable office chair with lumbar support, breathable mesh, and multiple adjustment points. Promotes healthy posture.",
+        "category": "Home Goods",
+        "subcategory": "Furniture",
+        "price_point": 449.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "25-60",
+          "income_level": "middle",
+          "work_from_home": true,
+          "health_conscious": true
+        }
+      },
+      {
+        "survey_id": "home_008",
+        "product_name": "Smart Thermostat",
+        "product_description": "WiFi-enabled thermostat with learning capabilities, energy usage tracking, and remote control. Reduces utility costs.",
+        "category": "Home Goods",
+        "subcategory": "Smart Home",
+        "price_point": 249.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "28-55",
+          "income_level": "middle",
+          "homeowner": true,
+          "tech_savvy": true,
+          "eco_conscious": true
+        }
+      },
+      {
+        "survey_id": "home_009",
+        "product_name": "Air Purifier",
+        "product_description": "HEPA air purifier for large rooms. Removes allergens, dust, and odors. Quiet operation with multiple fan speeds.",
+        "category": "Home Goods",
+        "subcategory": "Air Quality",
+        "price_point": 299.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "30-60",
+          "income_level": "middle",
+          "health_conscious": true,
+          "allergies_or_asthma": true
+        }
+      },
+      {
+        "survey_id": "home_010",
+        "product_name": "Premium Espresso Machine",
+        "product_description": "Semi-automatic espresso machine with professional-grade features. Makes cafe-quality espresso, cappuccino, and lattes at home.",
+        "category": "Home Goods",
+        "subcategory": "Kitchen Appliances",
+        "price_point": 899.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "28-55",
+          "income_level": "upper_middle",
+          "coffee_enthusiast": true
+        }
+      },
+      {
+        "survey_id": "home_011",
+        "product_name": "Smart LED Light Bulbs (4-pack)",
+        "product_description": "WiFi-enabled color-changing LED bulbs. Control via app, voice assistant compatible, schedules and scenes.",
+        "category": "Home Goods",
+        "subcategory": "Smart Home",
+        "price_point": 59.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "22-50",
+          "income_level": "middle",
+          "tech_savvy": true
+        }
+      }
+    ],
+    "food_beverage": [
+      {
+        "survey_id": "food_001",
+        "product_name": "Organic Protein Bar (12-pack)",
+        "product_description": "Plant-based protein bars with organic ingredients, no artificial sweeteners. Convenient nutrition for active lifestyles.",
+        "category": "Food & Beverage",
+        "subcategory": "Snacks",
+        "price_point": 24.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "20-50",
+          "income_level": "middle",
+          "health_conscious": true,
+          "fitness_oriented": true
+        }
+      },
+      {
+        "survey_id": "food_002",
+        "product_name": "Premium Cold Brew Coffee (12 cans)",
+        "product_description": "Nitro cold brew coffee made from single-origin beans. Smooth, naturally sweet, zero sugar, ready-to-drink.",
+        "category": "Food & Beverage",
+        "subcategory": "Beverages",
+        "price_point": 32.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "25-45",
+          "income_level": "upper_middle",
+          "coffee_enthusiast": true,
+          "busy_professional": true
+        }
+      },
+      {
+        "survey_id": "food_003",
+        "product_name": "Meal Delivery Kit (4 meals)",
+        "product_description": "Pre-portioned ingredients with chef-designed recipes. Cook restaurant-quality meals at home in 30 minutes.",
+        "category": "Food & Beverage",
+        "subcategory": "Meal Kits",
+        "price_point": 69.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "25-50",
+          "income_level": "upper_middle",
+          "time_constrained": true,
+          "cooking_interested": true
+        }
+      },
+      {
+        "survey_id": "food_004",
+        "product_name": "Artisan Chocolate Truffle Box",
+        "product_description": "Handcrafted chocolate truffles with gourmet flavors. Premium cocoa, unique flavor combinations, elegant packaging.",
+        "category": "Food & Beverage",
+        "subcategory": "Confections",
+        "price_point": 49.99,
+        "price_tier": "luxury",
+        "target_demographic": {
+          "age_range": "30-65",
+          "income_level": "upper_middle_to_high",
+          "appreciates_quality": true,
+          "gift_giving": true
+        }
+      },
+      {
+        "survey_id": "food_005",
+        "product_name": "Kombucha Variety Pack (12 bottles)",
+        "product_description": "Probiotic kombucha in assorted flavors. Organic ingredients, live cultures, lightly carbonated.",
+        "category": "Food & Beverage",
+        "subcategory": "Beverages",
+        "price_point": 34.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "22-45",
+          "income_level": "middle",
+          "health_conscious": true,
+          "wellness_oriented": true
+        }
+      },
+      {
+        "survey_id": "food_006",
+        "product_name": "Specialty Coffee Bean Subscription",
+        "product_description": "Monthly delivery of freshly roasted single-origin coffee beans. Sourced from sustainable farms, tasting notes included.",
+        "category": "Food & Beverage",
+        "subcategory": "Subscription",
+        "price_point": 28.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "25-55",
+          "income_level": "middle_to_upper",
+          "coffee_enthusiast": true
+        }
+      },
+      {
+        "survey_id": "food_007",
+        "product_name": "Plant-Based Protein Powder",
+        "product_description": "Organic vegan protein powder with complete amino acid profile. No artificial ingredients, smooth texture, vanilla flavor.",
+        "category": "Food & Beverage",
+        "subcategory": "Supplements",
+        "price_point": 44.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "20-50",
+          "income_level": "middle",
+          "fitness_oriented": true,
+          "plant_based_diet": true
+        }
+      },
+      {
+        "survey_id": "food_008",
+        "product_name": "Gourmet Cheese Sampler",
+        "product_description": "Selection of artisan cheeses from around the world. Includes tasting guide and pairing suggestions.",
+        "category": "Food & Beverage",
+        "subcategory": "Specialty Foods",
+        "price_point": 59.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "30-65",
+          "income_level": "upper_middle",
+          "foodie": true,
+          "entertaining": true
+        }
+      },
+      {
+        "survey_id": "food_009",
+        "product_name": "Organic Green Juice (6-pack)",
+        "product_description": "Cold-pressed green juice with kale, spinach, cucumber, and apple. No added sugar, pure nutrition.",
+        "category": "Food & Beverage",
+        "subcategory": "Beverages",
+        "price_point": 39.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "25-50",
+          "income_level": "upper_middle",
+          "health_conscious": true,
+          "wellness_oriented": true
+        }
+      },
+      {
+        "survey_id": "food_010",
+        "product_name": "Craft Beer Variety Pack (12 pack)",
+        "product_description": "Assortment of craft beers from local breweries. IPAs, stouts, and lagers showcasing brewing creativity.",
+        "category": "Food & Beverage",
+        "subcategory": "Alcoholic Beverages",
+        "price_point": 29.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "25-55",
+          "income_level": "middle",
+          "beer_enthusiast": true
+        }
+      }
+    ],
+    "services": [
+      {
+        "survey_id": "serv_001",
+        "product_name": "Online Fitness Coaching (3 months)",
+        "product_description": "Personalized online fitness coaching with custom workout plans, nutrition guidance, and weekly video check-ins.",
+        "category": "Services",
+        "subcategory": "Health & Fitness",
+        "price_point": 299.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "25-50",
+          "income_level": "middle",
+          "fitness_goals": true,
+          "accountability_seeking": true
+        }
+      },
+      {
+        "survey_id": "serv_002",
+        "product_name": "Premium Streaming Service (1 year)",
+        "product_description": "Ad-free streaming with 4K content, offline downloads, and multiple simultaneous streams. Extensive library of shows and movies.",
+        "category": "Services",
+        "subcategory": "Entertainment",
+        "price_point": 179.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "18-60",
+          "income_level": "middle",
+          "entertainment_consumption": "high"
+        }
+      },
+      {
+        "survey_id": "serv_003",
+        "product_name": "Professional Resume Writing Service",
+        "product_description": "Expert resume and cover letter writing by certified career coaches. ATS-optimized, industry-specific, includes revisions.",
+        "category": "Services",
+        "subcategory": "Career",
+        "price_point": 199.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "22-55",
+          "income_level": "middle",
+          "job_seeking": true
+        }
+      },
+      {
+        "survey_id": "serv_004",
+        "product_name": "Luxury Spa Day Package",
+        "product_description": "Full-day spa experience including massage, facial, body treatment, and access to facilities. Premium products and expert therapists.",
+        "category": "Services",
+        "subcategory": "Wellness",
+        "price_point": 399.99,
+        "price_tier": "luxury",
+        "target_demographic": {
+          "age_range": "30-65",
+          "income_level": "upper_middle_to_high",
+          "self_care_oriented": true
+        }
+      },
+      {
+        "survey_id": "serv_005",
+        "product_name": "Online Learning Platform (1 year)",
+        "product_description": "Unlimited access to thousands of professional courses in technology, business, and creative fields. Expert instructors and certificates.",
+        "category": "Services",
+        "subcategory": "Education",
+        "price_point": 299.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "22-50",
+          "income_level": "middle",
+          "career_advancement": true,
+          "lifelong_learner": true
+        }
+      },
+      {
+        "survey_id": "serv_006",
+        "product_name": "Home Cleaning Service (Monthly)",
+        "product_description": "Professional home cleaning service with background-checked cleaners. Deep cleaning, eco-friendly products, satisfaction guaranteed.",
+        "category": "Services",
+        "subcategory": "Home",
+        "price_point": 159.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "30-60",
+          "income_level": "middle_to_upper",
+          "time_constrained": true,
+          "dual_income": true
+        }
+      },
+      {
+        "survey_id": "serv_007",
+        "product_name": "Premium Car Detailing Service",
+        "product_description": "Comprehensive car detailing including exterior wash/wax, interior deep clean, and paint correction. Mobile service available.",
+        "category": "Services",
+        "subcategory": "Automotive",
+        "price_point": 249.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "25-60",
+          "income_level": "upper_middle",
+          "car_ownership": true,
+          "values_appearance": true
+        }
+      },
+      {
+        "survey_id": "serv_008",
+        "product_name": "Language Learning App (1 year)",
+        "product_description": "Gamified language learning with personalized lessons, speech recognition, and cultural insights. Learn at your own pace.",
+        "category": "Services",
+        "subcategory": "Education",
+        "price_point": 119.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "18-55",
+          "income_level": "middle",
+          "travel_interested": true,
+          "career_development": true
+        }
+      },
+      {
+        "survey_id": "serv_009",
+        "product_name": "Virtual Mental Health Therapy (10 sessions)",
+        "product_description": "Online therapy sessions with licensed therapists. Flexible scheduling, video or chat options, specialized in anxiety/depression.",
+        "category": "Services",
+        "subcategory": "Health & Wellness",
+        "price_point": 799.99,
+        "price_tier": "premium",
+        "target_demographic": {
+          "age_range": "20-55",
+          "income_level": "middle_to_upper",
+          "mental_health_awareness": true
+        }
+      },
+      {
+        "survey_id": "serv_010",
+        "product_name": "Meal Prep Delivery Service (Weekly)",
+        "product_description": "Healthy pre-made meals delivered weekly. Nutritionist-designed, macro-balanced, ready to eat. Multiple dietary options.",
+        "category": "Services",
+        "subcategory": "Food",
+        "price_point": 89.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "25-50",
+          "income_level": "middle_to_upper",
+          "health_conscious": true,
+          "time_constrained": true,
+          "fitness_goals": true
+        }
+      },
+      {
+        "survey_id": "serv_011",
+        "product_name": "Premium Cloud Storage (2TB, 1 year)",
+        "product_description": "Secure cloud storage with automatic backup, file sharing, and cross-device sync. Enterprise-grade security.",
+        "category": "Services",
+        "subcategory": "Technology",
+        "price_point": 99.99,
+        "price_tier": "mid-range",
+        "target_demographic": {
+          "age_range": "22-60",
+          "income_level": "middle",
+          "tech_savvy": true,
+          "data_security_conscious": true
+        }
+      },
+      {
+        "survey_id": "serv_012",
+        "product_name": "Executive Business Coaching (6 months)",
+        "product_description": "One-on-one executive coaching for leadership development. Strategic planning, communication skills, career advancement.",
+        "category": "Services",
+        "subcategory": "Career",
+        "price_point": 4999.99,
+        "price_tier": "luxury",
+        "target_demographic": {
+          "age_range": "35-60",
+          "income_level": "high",
+          "executive_or_manager": true,
+          "career_advancement": true
+        }
+      }
+    ]
+  },
+  "validation_requirements": {
+    "ground_truth_collection": "Each survey should be validated with N≥100 human respondents",
+    "demographic_stratification": "Ensure representative sampling across age, income, and relevant psychographic variables",
+    "metrics_targets": {
+      "kendall_tau": "≥0.85 (rank correlation with human ratings)",
+      "pearson_correlation": "≥0.90 with demographic conditioning enabled",
+      "mae": "<0.5 (mean absolute error on 1-5 scale)",
+      "demographic_improvement": "+0.40 correlation improvement (Δρ ≈ +40)"
+    }
+  }
+}

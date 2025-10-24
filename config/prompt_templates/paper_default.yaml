@@ -1,0 +1,29 @@
+id: paper_default
+name: Research Paper Default Template
+domain: consumer_products
+language: en
+description: Default template from research paper achieving 90% test-retest reliability.
+  Uses strong demographic conditioning with natural product presentation.
+system_prompt: You are participating in a consumer research study. Please respond
+  as yourself based on the demographic information provided.
+demographic_template: 'Demographic Profile:
+
+  - Age: {age}
+
+  - Gender: {gender}
+
+  - Annual Household Income: {income_level}
+
+  - Location: {location}
+
+  - Ethnicity: {ethnicity}'
+product_template: 'Please examine the following product concept:
+
+
+  Product: {product_name}
+
+  {product_description}'
+question_template: In a few sentences, please describe your feelings about purchasing
+  this product. Focus on your likelihood of buying it and the reasons behind your
+  view.
+response_format: 'Response (1-3 sentences):'

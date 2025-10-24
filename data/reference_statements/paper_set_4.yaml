@@ -1,0 +1,17 @@
+id: paper_set_4
+version: '1.0'
+domain: consumer_products
+language: en
+description: Consideration-based statements (paper reference set 4)
+created_at: '2025-10-18T22:55:59.895543'
+statements:
+- rating: 1
+  text: I wouldn't consider buying this.
+- rating: 2
+  text: I'd be hesitant to purchase this.
+- rating: 3
+  text: I might consider this product.
+- rating: 4
+  text: I would consider purchasing this.
+- rating: 5
+  text: I would definitely consider buying this.

@@ -1,0 +1,17 @@
+id: paper_set_1
+version: '1.0'
+domain: consumer_products
+language: en
+description: Direct likelihood statements (paper reference set 1)
+created_at: '2025-10-18T22:55:59.895493'
+statements:
+- rating: 1
+  text: It's rather unlikely I'd buy it.
+- rating: 2
+  text: I probably wouldn't buy it.
+- rating: 3
+  text: I'm not sure if I'd buy it or not.
+- rating: 4
+  text: I'd probably buy it.
+- rating: 5
+  text: It's very likely I'd buy it.

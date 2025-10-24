@@ -1,0 +1,17 @@
+id: paper_set_2
+version: '1.0'
+domain: consumer_products
+language: en
+description: Interest-based statements (paper reference set 2)
+created_at: '2025-10-18T22:55:59.895526'
+statements:
+- rating: 1
+  text: I'm not interested in this at all.
+- rating: 2
+  text: I don't think this would interest me.
+- rating: 3
+  text: I'm somewhat unsure about my interest.
+- rating: 4
+  text: This seems interesting to me.
+- rating: 5
+  text: I'm very interested in this product.

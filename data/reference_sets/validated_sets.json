@@ -1,0 +1,22 @@
+{
+  "reference_sets": [
+    {
+      "set_id": "test_set_1",
+      "name": "Default Purchase Intent",
+      "description": "Standard 5-point purchase intent scale",
+      "statements": {
+        "1": "I would never purchase this product.",
+        "2": "I am unlikely to purchase this product.",
+        "3": "I might purchase this product.",
+        "4": "I would likely purchase this product.",
+        "5": "I would definitely purchase this product."
+      },
+      "metadata": {
+        "created_for_testing": true,
+        "quality_score": 0.85
+      }
+    }
+  ],
+  "version": "1.0.0",
+  "created_at": "2025-10-18T00:00:00Z"
+}

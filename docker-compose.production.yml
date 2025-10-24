@@ -1,0 +1,274 @@
+# Docker Compose for production deployment
+# Usage: docker-compose -f docker-compose.production.yml up -d
+
+version: '3.8'
+
+services:
+  # Nginx reverse proxy with SSL termination
+  nginx:
+    image: nginx:alpine
+    container_name: ssr-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/nginx/ssl:/etc/nginx/ssl:ro
+      - nginx-cache:/var/cache/nginx
+    depends_on:
+      - api
+    networks:
+      - ssr-network
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # FastAPI application (production configuration)
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ssr-api
+    deploy:
+      replicas: 3  # Run 3 instances for high availability
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    environment:
+      # Server
+      - ENV=production
+      - DEBUG=false
+      - LOG_LEVEL=INFO
+      - LOG_FORMAT=json
+
+      # LLM API Keys (loaded from secrets)
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+
+      # Database (use managed database in production)
+      - DATABASE_URL=${DATABASE_URL}
+
+      # Redis (use managed Redis in production)
+      - REDIS_URL=${REDIS_URL}
+      - TASK_QUEUE_BACKEND=redis
+
+      # Celery
+      - CELERY_BROKER_URL=${REDIS_URL}
+      - CELERY_RESULT_BACKEND=${REDIS_URL}
+
+      # Security
+      - API_KEYS=${API_KEYS}
+      - RATE_LIMIT_ENABLED=true
+      - RATE_LIMIT_REQUESTS_PER_MINUTE=60
+      - RATE_LIMIT_REQUESTS_PER_HOUR=1000
+      - RATE_LIMIT_REQUESTS_PER_DAY=10000
+
+      # CORS (restrict to allowed origins)
+      - CORS_ORIGINS=${CORS_ORIGINS}
+
+      # Monitoring
+      - SENTRY_DSN=${SENTRY_DSN}
+      - SENTRY_TRACES_SAMPLE_RATE=0.1
+      - METRICS_ENABLED=true
+
+      # Features
+      - ENABLE_DEMOGRAPHICS=true
+      - ENABLE_MULTI_SET_AVERAGING=true
+      - ENABLE_BIAS_DETECTION=true
+
+      # Worker configuration
+      - MAX_CONCURRENT_TASKS=20
+      - TASK_TIMEOUT_SECONDS=7200  # 2 hours
+
+    volumes:
+      # Data persistence (use named volumes)
+      - api-data:/app/data
+      - api-cache:/app/data/cache
+    networks:
+      - ssr-network
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Celery workers (scaled for production)
+  celery-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    deploy:
+      replicas: 5  # Run 5 workers for parallel processing
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+    command: celery -A src.api.background_tasks worker --loglevel=info --concurrency=8 --max-tasks-per-child=100
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - CELERY_BROKER_URL=${REDIS_URL}
+      - CELERY_RESULT_BACKEND=${REDIS_URL}
+      - SENTRY_DSN=${SENTRY_DSN}
+    volumes:
+      - api-data:/app/data
+      - api-cache:/app/data/cache
+    networks:
+      - ssr-network
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Celery beat for scheduled tasks
+  celery-beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ssr-celery-beat
+    command: celery -A src.api.background_tasks beat --loglevel=info
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - CELERY_BROKER_URL=${REDIS_URL}
+      - CELERY_RESULT_BACKEND=${REDIS_URL}
+    depends_on:
+      - redis
+    networks:
+      - ssr-network
+    restart: always
+
+  # Redis (local instance - use managed service for production)
+  redis:
+    image: redis:7-alpine
+    container_name: ssr-redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/data
+    networks:
+      - ssr-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  # PostgreSQL (local instance - use managed service for production)
+  postgres:
+    image: postgres:15-alpine
+    container_name: ssr-postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./config/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - ssr-network
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Prometheus for metrics
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: ssr-prometheus
+    volumes:
+      - ./config/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+    networks:
+      - ssr-network
+    restart: always
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: ssr-grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=https://monitoring.yourdomain.com
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./config/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./config/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus
+    networks:
+      - ssr-network
+    restart: always
+
+  # Log aggregation (optional - ELK stack alternative)
+  # Uncomment if not using cloud logging
+  # loki:
+  #   image: grafana/loki:latest
+  #   container_name: ssr-loki
+  #   ports:
+  #     - "3100:3100"
+  #   volumes:
+  #     - ./config/loki/loki.yml:/etc/loki/local-config.yaml
+  #     - loki-data:/loki
+  #   networks:
+  #     - ssr-network
+  #   restart: always
+
+networks:
+  ssr-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  api-data:
+    driver: local
+  api-cache:
+    driver: local
+  nginx-cache:
+    driver: local
+  prometheus-data:
+    driver: local
+  grafana-data:
+    driver: local
+  # loki-data:
+  #   driver: local

@@ -1,0 +1,17 @@
+id: paper_set_6
+version: '1.0'
+domain: consumer_products
+language: en
+description: Decision-based statements (paper reference set 6)
+created_at: '2025-10-18T22:55:59.895561'
+statements:
+- rating: 1
+  text: I would pass on this product.
+- rating: 2
+  text: I'm inclined to skip this.
+- rating: 3
+  text: I'm on the fence about this.
+- rating: 4
+  text: I'm leaning toward getting this.
+- rating: 5
+  text: I would choose to buy this.

@@ -158,6 +158,31 @@ class ReferenceStatementManager:
                 self._sets[ref_set.id] = ref_set
             except Exception as e:
                 print(f"Warning: Failed to load {yaml_file}: {e}")
+        
+        # Try to load from JSON files (validated_sets.json)
+        json_path = Path(__file__).parent.parent.parent / "data" / "reference_sets" / "validated_sets.json"
+        if json_path.exists():
+            try:
+                import json
+                with open(json_path) as f:
+                    data = json.load(f)
+                    for ref_set_data in data.get("reference_sets", []):
+                        statements = []
+                        for rating_str, text in ref_set_data["statements"].items():
+                            statements.append(ReferenceStatement(int(rating_str), text))
+                        
+                        ref_set = ReferenceStatementSet(
+                            id=ref_set_data["set_id"],
+                            version="1.0",
+                            domain="consumer_products",
+                            language="en",
+                            description=ref_set_data.get("description", ref_set_data["name"]),
+                            statements=statements
+                        )
+                        self._sets[ref_set.id] = ref_set
+                print(f"Loaded {len(self._sets)} reference sets from JSON")
+            except Exception as e:
+                print(f"Warning: Failed to load JSON reference sets: {e}")
 
         # If no sets loaded, create paper's default sets
         if not self._sets:

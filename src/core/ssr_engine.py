@@ -38,9 +38,9 @@ class SSRConfig:
         enable_cache: Enable embedding caching (default: True)
     """
 
-    temperature: float = 0.1  # Very low temperature for highly distinct distributions
+    temperature: float = 1.5  # Paper optimal temperature for balanced distributions
     offset: float = 0.0
-    use_multi_set_averaging: bool = False  # Avoid averaging to prevent convergence
+    use_multi_set_averaging: bool = True  # Paper methodology: average across 6 reference sets
     reference_set_ids: Optional[List[str]] = None
     embedding_model: str = "text-embedding-3-small"
     embedding_dim: int = 1536
@@ -317,7 +317,7 @@ class SSREngine:
         return ssr_results
 
     def _get_reference_sets(self) -> List[ReferenceStatementSet]:
-        """Get configured reference statement sets"""
+        """Get configured reference statement sets - Paper methodology: use all 6 paper sets"""
         
         # If specific sets are configured, use them
         if self.config.reference_set_ids:
@@ -328,29 +328,26 @@ class SSREngine:
                 except KeyError:
                     pass
             if available_sets:
-                # Return ALL configured sets for consistent results
                 return available_sets
         
-        # Use ALL diverse reference sets for comprehensive evaluation
-        # Exclude paper sets as they're too generic and cause convergence to 3.0
-        all_sets = self.reference_manager.get_all_sets()
-        diverse_sets = [s for s in all_sets if not s.id.startswith("paper_set_")]
-        
-        if diverse_sets:
-            # Use ALL diverse sets for consistent, comprehensive evaluation
-            # Don't randomly sample - use all available perspectives
-            return diverse_sets
-        
-        # Fallback to paper sets only if no diverse sets available
+        # Paper methodology: Use ALL 6 paper reference sets for averaging
+        # This provides robustness through multiple perspectives
         try:
             paper_sets = self.reference_manager.get_paper_default_sets()
             if paper_sets:
-                return paper_sets
+                # Use all 6 paper sets for comprehensive coverage
+                return paper_sets[:6]
         except:
             pass
         
+        # Fallback to all available sets
+        all_sets = self.reference_manager.get_all_sets()
+        if all_sets:
+            # Use first 6 sets for consistency with paper methodology
+            return all_sets[:6]
+        
         # Last resort fallback
-        return all_sets if all_sets else [self.reference_manager.get_set("test_set_1")]
+        return [self.reference_manager.get_set("test_set_1")]
 
     def get_statistics(self) -> Dict[str, Any]:
         """

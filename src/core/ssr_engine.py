@@ -312,13 +312,35 @@ class SSREngine:
 
     def _get_reference_sets(self) -> List[ReferenceStatementSet]:
         """Get configured reference statement sets"""
-        if not self.config.reference_set_ids:
-            return self.reference_manager.get_paper_default_sets()
-
-        return [
-            self.reference_manager.get_set(set_id)
-            for set_id in self.config.reference_set_ids
-        ]
+        import random
+        
+        # If specific sets are configured, try to use them
+        if self.config.reference_set_ids:
+            available_sets = []
+            for set_id in self.config.reference_set_ids:
+                try:
+                    available_sets.append(self.reference_manager.get_set(set_id))
+                except KeyError:
+                    pass
+            if available_sets:
+                return available_sets
+        
+        # Try to get paper default sets
+        try:
+            paper_sets = self.reference_manager.get_paper_default_sets()
+            if paper_sets:
+                return paper_sets
+        except:
+            pass
+        
+        # If no paper sets available, use all available sets (random selection of 3-6)
+        all_sets = self.reference_manager.get_all_sets()
+        if len(all_sets) > 6:
+            # Randomly select 3-6 sets for diversity
+            num_sets = random.randint(3, min(6, len(all_sets)))
+            return random.sample(all_sets, num_sets)
+        
+        return all_sets if all_sets else [self.reference_manager.get_set("test_set_1")]
 
     def get_statistics(self) -> Dict[str, Any]:
         """

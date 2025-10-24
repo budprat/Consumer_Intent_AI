@@ -332,16 +332,17 @@ class ReferenceStatementManager:
         return self._sets[set_id]
 
     def get_all_sets(self) -> List[ReferenceStatementSet]:
-        """Get all reference statement sets"""
+        """Get all available reference statement sets"""
         return list(self._sets.values())
 
     def get_paper_default_sets(self) -> List[ReferenceStatementSet]:
         """Get the 6 default reference statement sets from the paper"""
-        return [
+        paper_sets = [
             self._sets[f"paper_set_{i}"]
             for i in range(1, 7)
             if f"paper_set_{i}" in self._sets
         ]
+        return paper_sets if paper_sets else []
 
     def compute_all_embeddings(self, embedding_retriever):
         """

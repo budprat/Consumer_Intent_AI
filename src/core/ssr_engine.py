@@ -29,18 +29,18 @@ class SSRConfig:
     Configuration for SSR Engine
 
     Attributes:
-        temperature: Distribution temperature (default: 1.0, tested: 0.5, 1.0, 1.5)
+        temperature: Distribution temperature (default: 0.3 for sharper distributions)
         offset: Distribution offset parameter (default: 0.0)
-        use_multi_set_averaging: Average across multiple reference sets (default: True)
-        reference_set_ids: Specific reference sets to use (default: paper's 6 sets)
+        use_multi_set_averaging: Average across multiple reference sets (default: False)
+        reference_set_ids: Specific reference sets to use (default: None for dynamic selection)
         embedding_model: Embedding model name (default: text-embedding-3-small)
         embedding_dim: Embedding dimension (default: 1536)
         enable_cache: Enable embedding caching (default: True)
     """
 
-    temperature: float = 1.0
+    temperature: float = 0.1  # Very low temperature for highly distinct distributions
     offset: float = 0.0
-    use_multi_set_averaging: bool = True
+    use_multi_set_averaging: bool = False  # Avoid averaging to prevent convergence
     reference_set_ids: Optional[List[str]] = None
     embedding_model: str = "text-embedding-3-small"
     embedding_dim: int = 1536

@@ -318,7 +318,21 @@ class SSREngine:
             if available_sets:
                 return available_sets
         
-        # Try to get paper default sets
+        # Use diverse reference sets for better differentiation
+        # Exclude paper sets as they're too generic and cause convergence to 3.0
+        all_sets = self.reference_manager.get_all_sets()
+        diverse_sets = [s for s in all_sets if not s.id.startswith("paper_set_")]
+        
+        # If we have diverse sets, use them (random selection for variety)
+        if diverse_sets:
+            if len(diverse_sets) > 4:
+                # Select 3-5 diverse sets randomly for each survey
+                num_sets = random.randint(3, min(5, len(diverse_sets)))
+                return random.sample(diverse_sets, num_sets)
+            else:
+                return diverse_sets
+        
+        # Fallback to paper sets only if no diverse sets available
         try:
             paper_sets = self.reference_manager.get_paper_default_sets()
             if paper_sets:
@@ -326,13 +340,7 @@ class SSREngine:
         except:
             pass
         
-        # If no paper sets available, use all available sets (random selection of 3-6)
-        all_sets = self.reference_manager.get_all_sets()
-        if len(all_sets) > 6:
-            # Randomly select 3-6 sets for diversity
-            num_sets = random.randint(3, min(6, len(all_sets)))
-            return random.sample(all_sets, num_sets)
-        
+        # Last resort fallback
         return all_sets if all_sets else [self.reference_manager.get_set("test_set_1")]
 
     def get_statistics(self) -> Dict[str, Any]:

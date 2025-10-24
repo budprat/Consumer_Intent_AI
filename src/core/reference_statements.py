@@ -151,7 +151,7 @@ class ReferenceStatementManager:
 
     def _load_default_sets(self):
         """Load default reference statement sets from data directory"""
-        # Try to load from YAML files
+        # Try to load from YAML files (paper sets have priority)
         for yaml_file in self.data_dir.glob("*.yaml"):
             try:
                 ref_set = self.load_from_yaml(yaml_file)
@@ -159,7 +159,12 @@ class ReferenceStatementManager:
             except Exception as e:
                 print(f"Warning: Failed to load {yaml_file}: {e}")
         
-        # Try to load from JSON files (validated_sets.json)
+        # If we already have paper sets from YAML, don't load JSON duplicates
+        if self._sets:
+            print(f"Loaded {len(self._sets)} paper reference sets from YAML")
+            return
+        
+        # Only load from JSON if no YAML sets were found
         json_path = Path(__file__).parent.parent.parent / "data" / "reference_sets" / "validated_sets.json"
         if json_path.exists():
             try:

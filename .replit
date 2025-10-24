@@ -1,9 +1,11 @@
 modules = ["nodejs-20", "bash", "web", "python-3.11"]
 [agent]
 expertMode = true
+integrations = ["python_database:1.0.0"]
 
 [nix]
 channel = "stable-25_05"
+packages = ["cairo", "ffmpeg-full", "freetype", "ghostscript", "glibcLocales", "gobject-introspection", "gtk3", "libxcrypt", "libyaml", "pkg-config", "qhull", "tcl", "tk", "xsimd"]
 
 [workflows]
 runButton = "Project"
@@ -38,5 +40,5 @@ localPort = 8000
 externalPort = 8000
 
 [[ports]]
-localPort = 39277
-externalPort = 3000
+localPort = 35909
+externalPort = 3001

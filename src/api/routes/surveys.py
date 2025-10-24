@@ -1,11 +1,13 @@
 # ABOUTME: Survey execution endpoints with async task processing
 # ABOUTME: Handles survey creation, execution, status polling, and results retrieval
+# Updated to use PostgreSQL database for persistent storage
 
-from fastapi import APIRouter, HTTPException, status, BackgroundTasks, Query
+from fastapi import APIRouter, HTTPException, status, BackgroundTasks, Query, Depends
 from typing import Dict, Optional
 import uuid
 import logging
 from datetime import datetime
+from sqlalchemy.orm import Session
 
 from ..models.surveys import (
     SurveyCreateRequest,
@@ -18,14 +20,16 @@ from ..models.surveys import (
 )
 from ..models.responses import ErrorResponse
 
+# Import database models and session
+from ...database.models import Survey as SurveyDB, get_db
+
 # Import SSR Executor Service
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-# In-memory storage for demo (production should use Redis/database)
-_surveys: Dict[str, dict] = {}
+# Keep in-memory storage for tasks and results (until we implement task persistence)
 _tasks: Dict[str, dict] = {}
 _results: Dict[str, dict] = {}
 
@@ -48,35 +52,30 @@ _results: Dict[str, dict] = {}
     Returns basic information about each survey including status.
     """,
 )
-async def list_surveys() -> list[SurveyResponse]:
+async def list_surveys(db: Session = Depends(get_db)) -> list[SurveyResponse]:
     """
-    Get a list of all surveys.
+    Get a list of all surveys from database.
 
     Returns:
         List of survey responses ordered by creation date (newest first)
     """
     surveys_list = []
 
-    for survey_id, survey in _surveys.items():
-        surveys_list.append(
-            SurveyResponse(
-                survey_id=survey_id,
-                product_name=survey["product_name"],
-                created_at=survey["created_at"],
-                status=SurveyStatus(survey["status"]),
-                configuration={
-                    "reference_set_ids": survey["reference_set_ids"],
-                    "averaging_strategy": survey["averaging_strategy"],
-                    "temperature": survey["temperature"],
-                    "enable_demographics": survey["enable_demographics"],
-                    "enable_bias_detection": survey["enable_bias_detection"],
-                },
+    if db:
+        # Fetch from database
+        db_surveys = db.query(SurveyDB).order_by(SurveyDB.created_at.desc()).all()
+        
+        for survey in db_surveys:
+            surveys_list.append(
+                SurveyResponse(
+                    survey_id=survey.survey_id,
+                    product_name=survey.product_name,
+                    created_at=survey.created_at,
+                    status=survey.status,
+                    configuration=survey.configuration,
+                )
             )
-        )
-
-    # Sort by creation date (newest first)
-    surveys_list.sort(key=lambda s: s.created_at, reverse=True)
-
+    
     logger.info(f"Listed {len(surveys_list)} surveys")
 
     return surveys_list
@@ -101,9 +100,9 @@ async def list_surveys() -> list[SurveyResponse]:
     Returns survey configuration and current status.
     """,
 )
-async def get_survey(survey_id: str) -> SurveyResponse:
+async def get_survey(survey_id: str, db: Session = Depends(get_db)) -> SurveyResponse:
     """
-    Get details for a specific survey.
+    Get details for a specific survey from database.
 
     Args:
         survey_id: Unique survey identifier
@@ -114,28 +113,25 @@ async def get_survey(survey_id: str) -> SurveyResponse:
     Raises:
         HTTPException: If survey not found
     """
-    if survey_id not in _surveys:
+    survey = None
+    
+    if db:
+        survey = db.query(SurveyDB).filter(SurveyDB.survey_id == survey_id).first()
+    
+    if not survey:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Survey {survey_id} not found",
         )
 
-    survey = _surveys[survey_id]
-
     logger.info(f"Retrieved survey: {survey_id}")
 
     return SurveyResponse(
-        survey_id=survey_id,
-        product_name=survey["product_name"],
-        created_at=survey["created_at"],
-        status=SurveyStatus(survey["status"]),
-        configuration={
-            "reference_set_ids": survey["reference_set_ids"],
-            "averaging_strategy": survey["averaging_strategy"],
-            "temperature": survey["temperature"],
-            "enable_demographics": survey["enable_demographics"],
-            "enable_bias_detection": survey["enable_bias_detection"],
-        },
+        survey_id=survey.survey_id,
+        product_name=survey.product_name,
+        created_at=survey.created_at,
+        status=survey.status,
+        configuration=survey.configuration,
     )
 
 
@@ -159,9 +155,9 @@ async def get_survey(survey_id: str) -> SurveyResponse:
     The survey can be executed multiple times with different cohorts.
     """,
 )
-async def create_survey(request: SurveyCreateRequest) -> SurveyResponse:
+async def create_survey(request: SurveyCreateRequest, db: Session = Depends(get_db)) -> SurveyResponse:
     """
-    Create a new survey configuration.
+    Create a new survey configuration and save to database.
 
     Args:
         request: Survey creation request with product details and configuration
@@ -172,25 +168,42 @@ async def create_survey(request: SurveyCreateRequest) -> SurveyResponse:
     # Generate unique survey ID
     survey_id = f"survey_{uuid.uuid4().hex[:12]}"
 
-    # Create survey record
-    survey = {
-        "survey_id": survey_id,
-        "product_name": request.product_name,
-        "product_description": request.product_description,
-        "reference_set_ids": request.reference_set_ids or [
-            f"set_{i}" for i in range(1, 7)
-        ],
+    # Prepare configuration
+    configuration = {
+        "reference_set_ids": request.reference_set_ids or ["test_set_1"],
         "averaging_strategy": request.averaging_strategy.value,
         "temperature": request.temperature,
         "enable_demographics": request.enable_demographics,
         "enable_bias_detection": request.enable_bias_detection,
-        "metadata": request.metadata or {},
-        "created_at": datetime.utcnow(),
-        "status": SurveyStatus.PENDING.value,
     }
 
-    # Store survey
-    _surveys[survey_id] = survey
+    # Create database model
+    if db:
+        survey = SurveyDB(
+            survey_id=survey_id,
+            product_name=request.product_name,
+            product_description=request.product_description,
+            created_at=datetime.utcnow(),
+            status=SurveyStatus.PENDING,
+            configuration=configuration,
+            survey_metadata=request.metadata or {}
+        )
+        
+        # Add to database
+        db.add(survey)
+        db.commit()
+        db.refresh(survey)
+    else:
+        # Fallback if no database (shouldn't happen)
+        survey = type('obj', (object,), {
+            'survey_id': survey_id,
+            'product_name': request.product_name,
+            'product_description': request.product_description,
+            'created_at': datetime.utcnow(),
+            'status': SurveyStatus.PENDING,
+            'configuration': configuration,
+            'metadata': request.metadata or {}
+        })
 
     logger.info(
         f"Survey created: {survey_id}",
@@ -202,17 +215,11 @@ async def create_survey(request: SurveyCreateRequest) -> SurveyResponse:
     )
 
     return SurveyResponse(
-        survey_id=survey_id,
-        product_name=request.product_name,
-        created_at=survey["created_at"],
-        status=SurveyStatus.PENDING,
-        configuration={
-            "reference_set_ids": survey["reference_set_ids"],
-            "averaging_strategy": survey["averaging_strategy"],
-            "temperature": survey["temperature"],
-            "enable_demographics": survey["enable_demographics"],
-            "enable_bias_detection": survey["enable_bias_detection"],
-        },
+        survey_id=survey.survey_id,
+        product_name=survey.product_name,
+        created_at=survey.created_at,
+        status=survey.status,
+        configuration=survey.configuration,
     )
 
 
@@ -241,6 +248,7 @@ async def execute_survey(
     survey_id: str,
     request: SurveyExecuteRequest,
     background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
 ) -> SurveyExecuteResponse:
     """
     Execute a survey with specified cohort configuration.
@@ -256,14 +264,16 @@ async def execute_survey(
     Raises:
         HTTPException: If survey not found
     """
-    # Check if survey exists
-    if survey_id not in _surveys:
+    # Check if survey exists in database
+    survey = None
+    if db:
+        survey = db.query(SurveyDB).filter(SurveyDB.survey_id == survey_id).first()
+    
+    if not survey:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Survey not found: {survey_id}",
         )
-
-    survey = _surveys[survey_id]
 
     # Generate task ID
     task_id = f"task_{uuid.uuid4().hex[:12]}"

@@ -60,13 +60,11 @@ class SSRExecutor:
         
         self.consumer_generator = ConsumerGenerator(api_key=api_key)
         
-        # Use optimized SSR config with appropriate reference sets
-        # Exclude generic paper sets which cause convergence to 3.0
+        # Paper methodology: Temperature 1.5, multi-set averaging across 6 reference sets
         config = SSRConfig(
-            temperature=0.1,  # Sharp distributions
-            use_multi_set_averaging=False,  # Don't average to avoid convergence
-            reference_set_ids=['value_conscious', 'premium_buyer', 'necessity_based', 
-                             'emotional_appeal', 'innovation_focused']  # Use meaningful sets only
+            temperature=1.5,  # Paper optimal temperature for balanced distributions  
+            use_multi_set_averaging=True,  # Paper methodology: average across reference sets
+            reference_set_ids=None  # Use default paper sets
         )
         self.ssr_engine = SSREngine(config=config, api_key=api_key)
 

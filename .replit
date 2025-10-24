@@ -1,4 +1,4 @@
-modules = ["nodejs-20", "bash", "web", "python-3.11"]
+modules = ["nodejs-20", "bash", "web", "python-3.11", "postgresql-16"]
 [agent]
 expertMode = true
 integrations = ["python_database:1.0.0"]

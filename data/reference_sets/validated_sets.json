@@ -15,8 +15,88 @@
         "created_for_testing": true,
         "quality_score": 0.85
       }
+    },
+    {
+      "set_id": "value_conscious",
+      "name": "Value-Conscious Consumer",
+      "description": "Reference set for price-sensitive purchase decisions",
+      "statements": {
+        "1": "This is way too expensive and offers no value for the money. I would never waste money on this.",
+        "2": "The price doesn't justify what you get. I'd look for cheaper alternatives.",
+        "3": "The price is okay but I'm not sure if it's worth it. I'd have to think about it.",
+        "4": "This seems like good value for money. I'd probably buy it if I needed it.",
+        "5": "This is an amazing deal! Excellent value for the price. I'd buy it immediately."
+      },
+      "metadata": {
+        "created_for_testing": true,
+        "quality_score": 0.88
+      }
+    },
+    {
+      "set_id": "premium_buyer",
+      "name": "Premium Product Enthusiast",
+      "description": "Reference set for luxury and premium product evaluation",
+      "statements": {
+        "1": "This doesn't meet my quality standards at all. The features are basic and unimpressive.",
+        "2": "The quality seems mediocre. I expect much better features and craftsmanship for my purchases.",
+        "3": "It's decent quality but nothing special. I might consider it if there were no better options.",
+        "4": "This looks like a high-quality product with good features. I'd be interested in buying it.",
+        "5": "This is exactly the premium quality I look for! Outstanding features and design. Must have it!"
+      },
+      "metadata": {
+        "created_for_testing": true,
+        "quality_score": 0.87
+      }
+    },
+    {
+      "set_id": "necessity_based",
+      "name": "Need-Based Purchaser",
+      "description": "Reference set focused on practical necessity",
+      "statements": {
+        "1": "I have absolutely no need for this product. It would be completely useless to me.",
+        "2": "I don't really need this. It might be nice to have but I can easily live without it.",
+        "3": "I could use this occasionally but it's not essential. Maybe if the situation arose.",
+        "4": "This would be quite useful for me. It solves a problem I have and I'd likely get it.",
+        "5": "I desperately need this! It would solve a major problem for me. Buying it ASAP!"
+      },
+      "metadata": {
+        "created_for_testing": true,
+        "quality_score": 0.86
+      }
+    },
+    {
+      "set_id": "emotional_appeal",
+      "name": "Emotionally-Driven Buyer",
+      "description": "Reference set for emotional and lifestyle purchases",
+      "statements": {
+        "1": "This product doesn't resonate with me at all. I feel no connection or interest.",
+        "2": "It's not really my style. I don't see how this fits into my life.",
+        "3": "It's interesting but I'm not excited about it. Could take it or leave it.",
+        "4": "I really like this! It appeals to me and would enhance my lifestyle.",
+        "5": "I absolutely love this! It's perfect for me and exactly what I've been looking for!"
+      },
+      "metadata": {
+        "created_for_testing": true,
+        "quality_score": 0.89
+      }
+    },
+    {
+      "set_id": "innovation_focused",
+      "name": "Innovation Seeker",
+      "description": "Reference set for technology and innovation evaluation",
+      "statements": {
+        "1": "This is outdated technology. There's nothing innovative or interesting here.",
+        "2": "The features are pretty standard. Nothing groundbreaking that would make me buy it.",
+        "3": "It has some interesting features but nothing revolutionary. Might be worth considering.",
+        "4": "This has impressive innovation and useful new features. I'd be excited to try it.",
+        "5": "This is cutting-edge! The innovation is incredible and game-changing. I need this now!"
+      },
+      "metadata": {
+        "created_for_testing": true,
+        "quality_score": 0.90
+      }
     }
   ],
-  "version": "1.0.0",
-  "created_at": "2025-10-18T00:00:00Z"
+  "version": "1.1.0",
+  "created_at": "2025-10-24T00:00:00Z"
 }

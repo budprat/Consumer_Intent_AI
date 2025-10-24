@@ -2,8 +2,8 @@
 # ABOUTME: Centralizes all API-level configuration including auth, rate limiting, and monitoring
 
 from typing import Optional, List
-from pydantic import Field
-from pydantic_settings import BaseSettings
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 
 
@@ -242,26 +242,20 @@ class APISettings(BaseSettings):
     # Configuration Methods
     # ============================================================================
 
-    class Config:
-        """Pydantic settings configuration."""
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=True,
+        env_nested_delimiter="__",
+    )
 
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = True
-        # Support comma-separated lists in environment variables
-        env_nested_delimiter = "__"
-
-        @classmethod
-        def parse_env_var(cls, field_name: str, raw_val: str):
-            """Parse environment variables with special handling for lists."""
-            if field_name in [
-                "API_KEYS",
-                "CORS_ORIGINS",
-                "CORS_ALLOW_METHODS",
-                "CORS_ALLOW_HEADERS",
-            ]:
-                return [item.strip() for item in raw_val.split(",") if item.strip()]
-            return raw_val
+    @field_validator("API_KEYS", "CORS_ORIGINS", "CORS_ALLOW_METHODS", "CORS_ALLOW_HEADERS", mode="before")
+    @classmethod
+    def parse_comma_separated(cls, v):
+        """Parse comma-separated environment variables into lists."""
+        if isinstance(v, str):
+            return [item.strip() for item in v.split(",") if item.strip()]
+        return v
 
     def __init__(self, **kwargs):
         """Initialize settings and create required directories."""

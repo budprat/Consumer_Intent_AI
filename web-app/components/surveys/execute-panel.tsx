@@ -25,7 +25,7 @@ export function ExecutePanel({
     setError(null);
 
     try {
-      const response: ExecuteSurveyResponse = await apiClient.execute(
+      const response: ExecuteSurveyResponse = await apiClient.surveys.execute(
         surveyId,
         {
           llm_model: llmModel,

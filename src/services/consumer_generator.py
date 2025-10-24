@@ -268,7 +268,9 @@ Respond naturally as this person would, considering their financial situation an
         user_prompt = f"""Product: {product_name}
 Description: {product_description}
 
-Would you purchase this product? Reply in 1-2 SHORT sentences. Be direct about your intent (e.g., "I would definitely buy it", "I probably wouldn't buy it", "I might consider it")."""
+Would you purchase this product? Reply in 1-2 SHORT sentences expressing clear intent. 
+Use decisive language like: "I would definitely buy this", "I would absolutely not buy this", "I would likely purchase this", "This doesn't interest me at all", or "I would strongly consider buying this".
+Avoid hedging or uncertain language."""
 
         try:
             response = self.client.chat.completions.create(

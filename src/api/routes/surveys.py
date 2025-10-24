@@ -590,7 +590,7 @@ def _execute_survey_background(survey_id: str, task_id: str) -> None:
             temperature=survey["temperature"],
             enable_demographics=survey["enable_demographics"],
             demographic_filters=demographic_filters,
-            consumer_count=min(request["cohort_size"], 10),  # Limit to 10 for demo
+            consumer_count=min(request["cohort_size"], 200),  # Paper typical size: 150-400
             progress_callback=progress_callback,
         )
 

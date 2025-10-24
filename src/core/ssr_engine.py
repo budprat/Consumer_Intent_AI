@@ -210,22 +210,26 @@ class SSREngine:
             dist = self.distribution_constructor.construct_distribution(sim_result)
             distributions.append(dist)
 
-        # Step 4: Select best distribution instead of averaging
-        # Averaging causes convergence to neutral (3.0) - use single best distribution
+        # Step 4: Combine distributions based on configuration
         if len(distributions) > 1:
-            # Select distribution with highest confidence (lowest entropy)
-            # This preserves distinct rating patterns instead of averaging them out
-            import numpy as np
-            entropies = []
-            for dist in distributions:
-                # Calculate entropy: -sum(p * log(p))
-                probs = dist.probabilities
-                entropy = -np.sum(probs * np.log(probs + 1e-10))
-                entropies.append(entropy)
-            
-            # Use distribution with lowest entropy (highest confidence)
-            best_idx = np.argmin(entropies)
-            final_distribution = distributions[best_idx]
+            if self.config.use_multi_set_averaging:
+                # Average across all reference sets
+                final_distribution = self.distribution_constructor.average_across_reference_sets(
+                    distributions
+                )
+            else:
+                # Select the distribution with highest confidence (lowest entropy)
+                # This deterministically selects the best-matching reference frame
+                import numpy as np
+                best_confidence = -1
+                best_idx = 0
+                for i, dist in enumerate(distributions):
+                    # Use max probability as confidence metric
+                    confidence = max(dist.probabilities)
+                    if confidence > best_confidence:
+                        best_confidence = confidence
+                        best_idx = i
+                final_distribution = distributions[best_idx]
         else:
             final_distribution = distributions[0]
 
@@ -314,9 +318,8 @@ class SSREngine:
 
     def _get_reference_sets(self) -> List[ReferenceStatementSet]:
         """Get configured reference statement sets"""
-        import random
         
-        # If specific sets are configured, try to use them
+        # If specific sets are configured, use them
         if self.config.reference_set_ids:
             available_sets = []
             for set_id in self.config.reference_set_ids:
@@ -325,31 +328,29 @@ class SSREngine:
                 except KeyError:
                     pass
             if available_sets:
+                # Return ALL configured sets for consistent results
                 return available_sets
         
-        # Use diverse reference sets for better differentiation
+        # Use ALL diverse reference sets for comprehensive evaluation
         # Exclude paper sets as they're too generic and cause convergence to 3.0
         all_sets = self.reference_manager.get_all_sets()
         diverse_sets = [s for s in all_sets if not s.id.startswith("paper_set_")]
         
-        # If we have diverse sets, select FEWER to avoid averaging-induced convergence
-        # Using 1-2 sets preserves the distinct characteristics of each reference frame
         if diverse_sets:
-            # Use 1-2 reference sets only to avoid convergence to middle
-            num_sets = random.randint(1, min(2, len(diverse_sets)))
-            return random.sample(diverse_sets, num_sets)
+            # Use ALL diverse sets for consistent, comprehensive evaluation
+            # Don't randomly sample - use all available perspectives
+            return diverse_sets
         
         # Fallback to paper sets only if no diverse sets available
         try:
             paper_sets = self.reference_manager.get_paper_default_sets()
             if paper_sets:
-                # Also limit paper sets to avoid convergence
-                return random.sample(paper_sets, min(2, len(paper_sets)))
+                return paper_sets
         except:
             pass
         
         # Last resort fallback
-        return all_sets[:1] if all_sets else [self.reference_manager.get_set("test_set_1")]
+        return all_sets if all_sets else [self.reference_manager.get_set("test_set_1")]
 
     def get_statistics(self) -> Dict[str, Any]:
         """

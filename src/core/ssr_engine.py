@@ -210,13 +210,22 @@ class SSREngine:
             dist = self.distribution_constructor.construct_distribution(sim_result)
             distributions.append(dist)
 
-        # Step 4: Average distributions if using multi-set averaging
-        if self.config.use_multi_set_averaging and len(distributions) > 1:
-            final_distribution = (
-                self.distribution_constructor.average_across_reference_sets(
-                    distributions
-                )
-            )
+        # Step 4: Select best distribution instead of averaging
+        # Averaging causes convergence to neutral (3.0) - use single best distribution
+        if len(distributions) > 1:
+            # Select distribution with highest confidence (lowest entropy)
+            # This preserves distinct rating patterns instead of averaging them out
+            import numpy as np
+            entropies = []
+            for dist in distributions:
+                # Calculate entropy: -sum(p * log(p))
+                probs = dist.probabilities
+                entropy = -np.sum(probs * np.log(probs + 1e-10))
+                entropies.append(entropy)
+            
+            # Use distribution with lowest entropy (highest confidence)
+            best_idx = np.argmin(entropies)
+            final_distribution = distributions[best_idx]
         else:
             final_distribution = distributions[0]
 
@@ -323,25 +332,24 @@ class SSREngine:
         all_sets = self.reference_manager.get_all_sets()
         diverse_sets = [s for s in all_sets if not s.id.startswith("paper_set_")]
         
-        # If we have diverse sets, use them (random selection for variety)
+        # If we have diverse sets, select FEWER to avoid averaging-induced convergence
+        # Using 1-2 sets preserves the distinct characteristics of each reference frame
         if diverse_sets:
-            if len(diverse_sets) > 4:
-                # Select 3-5 diverse sets randomly for each survey
-                num_sets = random.randint(3, min(5, len(diverse_sets)))
-                return random.sample(diverse_sets, num_sets)
-            else:
-                return diverse_sets
+            # Use 1-2 reference sets only to avoid convergence to middle
+            num_sets = random.randint(1, min(2, len(diverse_sets)))
+            return random.sample(diverse_sets, num_sets)
         
         # Fallback to paper sets only if no diverse sets available
         try:
             paper_sets = self.reference_manager.get_paper_default_sets()
             if paper_sets:
-                return paper_sets
+                # Also limit paper sets to avoid convergence
+                return random.sample(paper_sets, min(2, len(paper_sets)))
         except:
             pass
         
         # Last resort fallback
-        return all_sets if all_sets else [self.reference_manager.get_set("test_set_1")]
+        return all_sets[:1] if all_sets else [self.reference_manager.get_set("test_set_1")]
 
     def get_statistics(self) -> Dict[str, Any]:
         """

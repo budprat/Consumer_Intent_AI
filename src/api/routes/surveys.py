@@ -420,6 +420,7 @@ async def get_survey_results(
         default=False,
         description="Include raw individual responses",
     ),
+    db: Session = Depends(get_db),
 ) -> SurveyResultsResponse:
     """
     Get survey results and metrics.
@@ -435,11 +436,14 @@ async def get_survey_results(
     Raises:
         HTTPException: If survey/results not found or task not completed
     """
-    if survey_id not in _surveys:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Survey not found: {survey_id}",
-        )
+    # Check if survey exists in database
+    if db:
+        survey = db.query(SurveyDB).filter(SurveyDB.survey_id == survey_id).first()
+        if not survey:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Survey not found: {survey_id}",
+            )
 
     # If task_id not specified, find latest completed task
     if not task_id:
@@ -526,7 +530,30 @@ def _execute_survey_background(survey_id: str, task_id: str) -> None:
         _tasks[task_id]["status"] = SurveyStatus.RUNNING.value
         _tasks[task_id]["started_at"] = datetime.utcnow()
 
-        survey = _surveys[survey_id]
+        # Get database session for background task
+        from ...database.models import SessionLocal
+        db = SessionLocal()
+        
+        try:
+            # Get survey from database
+            survey_db = db.query(SurveyDB).filter(SurveyDB.survey_id == survey_id).first()
+            if not survey_db:
+                raise ValueError(f"Survey not found: {survey_id}")
+            
+            # Convert database model to dict for backward compatibility
+            survey = {
+                "survey_id": survey_db.survey_id,
+                "product_name": survey_db.product_name,
+                "product_description": survey_db.product_description,
+                "status": survey_db.status,
+                "configuration": survey_db.configuration or {},
+                "metadata": survey_db.survey_metadata or {},
+                "temperature": survey_db.configuration.get("temperature", 1.0) if survey_db.configuration else 1.0,
+                "enable_demographics": survey_db.configuration.get("enable_demographics", True) if survey_db.configuration else True,
+            }
+        finally:
+            db.close()
+
         task = _tasks[task_id]
         request = task["request"]
 

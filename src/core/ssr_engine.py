@@ -56,16 +56,9 @@ class SSRConfig:
                 f"Embedding dimension must be positive, got {self.embedding_dim}"
             )
 
-        # Default to paper's 6 reference sets
-        if self.reference_set_ids is None:
-            self.reference_set_ids = [
-                "paper_set_1",
-                "paper_set_2",
-                "paper_set_3",
-                "paper_set_4",
-                "paper_set_5",
-                "paper_set_6",
-            ]
+        # Keep reference_set_ids as None to allow dynamic selection
+        # This enables the system to use all available diverse reference sets
+        pass
 
 
 @dataclass

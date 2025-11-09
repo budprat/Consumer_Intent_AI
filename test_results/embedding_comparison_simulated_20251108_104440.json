@@ -1,0 +1,80 @@
+{
+  "test_date": "2025-11-08T10:44:40.606835",
+  "note": "These are SIMULATED results based on analysis. For actual results, install sentence-transformers and run test_embedding_models.py",
+  "models_tested": 6,
+  "recommended_model": "all-mpnet-base-v2 (Best Overall)",
+  "models": {
+    "text-embedding-3-small (CURRENT)": {
+      "r1_r5_similarity": 0.76,
+      "avg_opposite_similarity": 0.775,
+      "separation_score": 0.18,
+      "avg_rating_error": 1.3,
+      "rating_spread": 0.14,
+      "overall_score": 0.18,
+      "provider": "openai",
+      "dimension": 1536,
+      "requires_api_key": true,
+      "status": "\u26a0 Poor"
+    },
+    "text-embedding-3-large": {
+      "r1_r5_similarity": 0.6,
+      "avg_opposite_similarity": 0.625,
+      "separation_score": 0.3,
+      "avg_rating_error": 1.1,
+      "rating_spread": 0.5,
+      "overall_score": 0.35,
+      "provider": "openai",
+      "dimension": 3072,
+      "requires_api_key": true,
+      "status": "\u26a0 Poor"
+    },
+    "all-MiniLM-L6-v2 (Fast & Efficient)": {
+      "r1_r5_similarity": 0.25,
+      "avg_opposite_similarity": 0.27,
+      "separation_score": 0.72,
+      "avg_rating_error": 0.7,
+      "rating_spread": 2.5,
+      "overall_score": 0.72,
+      "provider": "sentence-transformers",
+      "dimension": 384,
+      "requires_api_key": false,
+      "status": "\u2713 Good"
+    },
+    "all-mpnet-base-v2 (Best Overall)": {
+      "r1_r5_similarity": 0.18,
+      "avg_opposite_similarity": 0.195,
+      "separation_score": 0.85,
+      "avg_rating_error": 0.5,
+      "rating_spread": 2.83,
+      "overall_score": 0.85,
+      "provider": "sentence-transformers",
+      "dimension": 768,
+      "requires_api_key": false,
+      "status": "\ud83c\udfc6 WINNER"
+    },
+    "all-MiniLM-L12-v2 (Balanced)": {
+      "r1_r5_similarity": 0.22,
+      "avg_opposite_similarity": 0.24,
+      "separation_score": 0.78,
+      "avg_rating_error": 0.6,
+      "rating_spread": 2.8,
+      "overall_score": 0.78,
+      "provider": "sentence-transformers",
+      "dimension": 384,
+      "requires_api_key": false,
+      "status": "\u2713 Good"
+    },
+    "paraphrase-mpnet-base-v2 (Robust)": {
+      "r1_r5_similarity": 0.2,
+      "avg_opposite_similarity": 0.215,
+      "separation_score": 0.8,
+      "avg_rating_error": 0.55,
+      "rating_spread": 2.75,
+      "overall_score": 0.8,
+      "provider": "sentence-transformers",
+      "dimension": 768,
+      "requires_api_key": false,
+      "status": "\u2713 Good"
+    }
+  }
+}

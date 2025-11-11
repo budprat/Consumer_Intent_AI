@@ -15,6 +15,10 @@ import os
 import numpy as np
 from pathlib import Path
 from scipy import stats
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 sys.path.insert(0, str(Path(__file__).parent))
 

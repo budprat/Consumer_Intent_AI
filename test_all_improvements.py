@@ -84,7 +84,7 @@ Price: $24.99 for 12 bars""",
     # Generate diverse consumers
     print(f"\n{'-'*80}")
     print("Generating diverse consumers...")
-    consumers = consumer_generator.generate_consumers(count=6, demographics_enabled=True)
+    consumers = consumer_generator.generate_consumers(count=150, demographics_enabled=True)  # Paper uses 150-400
 
     results = []
 

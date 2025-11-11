@@ -66,9 +66,9 @@ Price: $18.99 for 16 oz bottle"""
     print("TEST 1: WITH DEMOGRAPHIC CONDITIONING (Paper methodology)")
     print("-"*80)
 
-    print("\nGenerating 5 demographically diverse consumers...")
+    print("\nGenerating 150 demographically diverse consumers (paper minimum)...")
     consumers_with_demo = consumer_generator.generate_consumers(
-        count=5,
+        count=150,  # Paper uses 150-400 per survey
         demographics_enabled=True,
         demographic_filters=None
     )
@@ -129,9 +129,9 @@ Price: $18.99 for 16 oz bottle"""
     print("TEST 2: WITHOUT DEMOGRAPHIC CONDITIONING (Control)")
     print("-"*80)
 
-    print("\nGenerating 5 generic consumers (no demographics)...")
+    print("\nGenerating 150 generic consumers (no demographics)...")
     consumers_without_demo = consumer_generator.generate_consumers(
-        count=5,
+        count=150,  # Same cohort size for fair comparison
         demographics_enabled=False
     )
 

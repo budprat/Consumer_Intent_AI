@@ -235,7 +235,7 @@ class ConsumerGenerator:
         product_name: str,
         product_description: str,
         llm_model: str = "gpt-3.5-turbo",
-        temperature: float = 1.0,
+        temperature: float = 0.5,
     ) -> str:
         """
         Generate consumer's purchase intent response using LLM.
@@ -248,7 +248,7 @@ class ConsumerGenerator:
             product_name: Name of the product
             product_description: Product description
             llm_model: LLM model to use (default: gpt-3.5-turbo)
-            temperature: LLM temperature (default: 1.0 optimal from paper)
+            temperature: LLM temperature (default: 0.5 as specified in paper Section 3.4)
 
         Returns:
             Consumer's textual response expressing purchase intent
@@ -268,9 +268,7 @@ Respond naturally as this person would, considering their financial situation an
         user_prompt = f"""Product: {product_name}
 Description: {product_description}
 
-Would you purchase this product? Reply in 1-2 SHORT sentences expressing clear intent. 
-Use decisive language like: "I would definitely buy this", "I would absolutely not buy this", "I would likely purchase this", "This doesn't interest me at all", or "I would strongly consider buying this".
-Avoid hedging or uncertain language."""
+Please respond in 1-3 sentences expressing your feelings about purchasing this product."""
 
         try:
             response = self.client.chat.completions.create(
@@ -281,7 +279,7 @@ Avoid hedging or uncertain language."""
                 ],
                 temperature=temperature,
                 top_p=0.9,  # Important for response diversity (spec line 730)
-                max_tokens=60,
+                max_tokens=150,  # Paper allows 1-3 sentences (~150 tokens)
             )
 
             return response.choices[0].message.content.strip()

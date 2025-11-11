@@ -30,7 +30,7 @@ class SSRConfig:
     Configuration for SSR Engine
 
     Attributes:
-        temperature: Distribution temperature (default: 0.5 for better differentiation, paper used 1.5)
+        temperature: SSR distribution temperature for softmax control (default: 1.0 as per paper Equation 9)
         offset: Distribution offset parameter (default: 0.0)
         use_multi_set_averaging: Average across multiple reference sets (default: True)
         reference_set_ids: Specific reference sets to use (default: None for dynamic selection)
@@ -39,7 +39,7 @@ class SSRConfig:
         enable_cache: Enable embedding caching (default: True)
     """
 
-    temperature: float = 0.5  # Optimized for better differentiation (paper: 1.5, but 0.5 gives 35x better spread)
+    temperature: float = 1.0  # Paper-compliant T_SSR (Equation 9, Page 10) - controls distribution smoothness
     offset: float = 0.0
     use_multi_set_averaging: bool = True  # Paper methodology: average across 6 reference sets
     reference_set_ids: Optional[List[str]] = None

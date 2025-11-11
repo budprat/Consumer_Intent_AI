@@ -290,7 +290,7 @@ def main():
                 product_info=EXTREME_PRODUCTS[product_id],
                 consumer_generator=consumer_generator,
                 ssr_engine=ssr_engine,
-                cohort_size=6  # Smaller for speed
+                cohort_size=150  # Paper uses 150-400 for statistical power
             )
             test_results.append(result)
         except Exception as e:

@@ -1,17 +1,17 @@
 """
-ABOUTME: Embedding retrieval using OpenAI text-embedding-3-small model
+ABOUTME: Embedding retrieval supporting multiple providers (OpenAI, Sentence Transformers)
 ABOUTME: Provides caching, batch processing, and error handling for embedding operations
 
 This module handles all embedding operations for the SSR system, including:
-- Text-to-embedding conversion using OpenAI API
+- Text-to-embedding conversion using OpenAI API or Sentence Transformers
 - Batch processing for efficiency
 - Caching to reduce API calls and costs
 - Retry logic for reliability
 
-Embedding Model: text-embedding-3-small
-- Dimensions: 1536
-- Cost-effective and performant
-- Used in the original research paper
+Supported Models:
+- OpenAI: text-embedding-3-small, text-embedding-3-large
+- Sentence Transformers: sentence-transformers/all-mpnet-base-v2 (recommended)
+                          sentence-transformers/all-MiniLM-L6-v2 (fast)
 """
 
 import numpy as np
@@ -35,6 +35,11 @@ try:
 except ImportError:
     OpenAI = None
     OpenAIError = Exception
+
+try:
+    from sentence_transformers import SentenceTransformer
+except ImportError:
+    SentenceTransformer = None
 
 
 @dataclass
@@ -193,12 +198,12 @@ class EmbeddingCache:
 
 class EmbeddingRetriever:
     """
-    Retrieves embeddings from OpenAI API with caching and batch processing
+    Retrieves embeddings from multiple providers with caching and batch processing
 
     Features:
-    - OpenAI text-embedding-3-small integration
+    - Multi-provider support: OpenAI, Sentence Transformers
     - Automatic caching to reduce API calls
-    - Batch processing up to 2048 texts
+    - Batch processing
     - Retry logic for reliability
     - Cost tracking
     """
@@ -216,32 +221,45 @@ class EmbeddingRetriever:
 
         Args:
             api_key: OpenAI API key (or use OPENAI_API_KEY env var)
-            model: Embedding model name (default: text-embedding-3-small)
-            embedding_dim: Embedding dimension (default: 1536)
+            model: Embedding model name
+                   - OpenAI: "text-embedding-3-small", "text-embedding-3-large"
+                   - Sentence Transformers: "sentence-transformers/all-mpnet-base-v2"
+            embedding_dim: Embedding dimension (auto-detected for sentence-transformers)
             cache_dir: Directory for cache storage
             enable_cache: Whether to use caching
         """
-        if OpenAI is None:
-            raise ImportError(
-                "OpenAI library not installed. Install with: pip install openai"
-            )
-
-        self.client = OpenAI(api_key=api_key)
         self.model = model
         self.embedding_dim = embedding_dim
-
         self.enable_cache = enable_cache
         self.cache = EmbeddingCache(cache_dir) if enable_cache else None
+
+        # Detect provider and initialize
+        if model.startswith("sentence-transformers/"):
+            # Use Sentence Transformers
+            if SentenceTransformer is None:
+                raise ImportError(
+                    "sentence-transformers library not installed. "
+                    "Install with: pip install sentence-transformers"
+                )
+            self.provider = "sentence-transformers"
+            self.st_model = SentenceTransformer(model)
+            # Update embedding_dim to actual model dimension
+            self.embedding_dim = self.st_model.get_sentence_embedding_dimension()
+            self.client = None
+        else:
+            # Use OpenAI
+            if OpenAI is None:
+                raise ImportError(
+                    "OpenAI library not installed. Install with: pip install openai"
+                )
+            self.provider = "openai"
+            self.client = OpenAI(api_key=api_key)
+            self.st_model = None
 
         # Statistics
         self.api_calls = 0
         self.total_tokens = 0
 
-    @retry(
-        stop=stop_after_attempt(3),
-        wait=wait_exponential(multiplier=1, min=2, max=10),
-        retry=retry_if_exception_type(OpenAIError),
-    )
     def get_embedding(self, text: str) -> EmbeddingResult:
         """
         Get embedding for single text
@@ -253,7 +271,7 @@ class EmbeddingRetriever:
             EmbeddingResult with embedding vector
 
         Raises:
-            OpenAIError: If API call fails after retries
+            Exception: If embedding retrieval fails
         """
         if not text or not text.strip():
             raise ValueError("Text cannot be empty")
@@ -269,7 +287,34 @@ class EmbeddingRetriever:
                     cached=True,
                 )
 
-        # Call API
+        # Get embedding based on provider
+        if self.provider == "sentence-transformers":
+            # Use Sentence Transformers (local, no API call)
+            embedding = self.st_model.encode(text, convert_to_numpy=True)
+            embedding = np.array(embedding, dtype=np.float32)
+
+            # Cache result
+            if self.enable_cache:
+                self.cache.set(text, self.model, embedding)
+
+            return EmbeddingResult(
+                embedding=embedding,
+                text=text,
+                model=self.model,
+                cached=False,
+                token_count=None,  # Not applicable for local models
+            )
+        else:
+            # Use OpenAI API with retry
+            return self._get_openai_embedding(text)
+
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=2, max=10),
+        retry=retry_if_exception_type(OpenAIError),
+    )
+    def _get_openai_embedding(self, text: str) -> EmbeddingResult:
+        """Get embedding from OpenAI API with retry logic"""
         try:
             response = self.client.embeddings.create(
                 input=text, model=self.model, encoding_format="float"
@@ -302,18 +347,79 @@ class EmbeddingRetriever:
         Get embeddings for multiple texts in batch
 
         Args:
-            texts: List of texts to embed (max 2048)
+            texts: List of texts to embed
 
         Returns:
             List of EmbeddingResult objects
 
         Note:
-            OpenAI API supports batch sizes up to 2048 texts
-            This method handles caching and only calls API for non-cached texts
+            Handles caching and provider-specific batch processing
         """
         if not texts:
             raise ValueError("Texts list cannot be empty")
 
+        # Validate texts
+        for i, text in enumerate(texts):
+            if not text or not text.strip():
+                raise ValueError(f"Text at index {i} is empty")
+
+        if self.provider == "sentence-transformers":
+            # Use Sentence Transformers batch encoding
+            return self._get_st_embeddings_batch(texts)
+        else:
+            # Use OpenAI batch API
+            return self._get_openai_embeddings_batch(texts)
+
+    def _get_st_embeddings_batch(self, texts: List[str]) -> List[EmbeddingResult]:
+        """Get embeddings batch from Sentence Transformers"""
+        results = []
+        texts_to_fetch = []
+        text_indices = {}
+
+        # Check cache first
+        for i, text in enumerate(texts):
+            if self.enable_cache:
+                cached_embedding = self.cache.get(text, self.model)
+                if cached_embedding is not None:
+                    results.append((i, EmbeddingResult(
+                        embedding=cached_embedding,
+                        text=text,
+                        model=self.model,
+                        cached=True,
+                    )))
+                    continue
+
+            # Need to fetch
+            text_indices[len(texts_to_fetch)] = i
+            texts_to_fetch.append(text)
+
+        # Encode uncached texts
+        if texts_to_fetch:
+            embeddings = self.st_model.encode(texts_to_fetch, convert_to_numpy=True)
+
+            for fetch_idx, embedding in enumerate(embeddings):
+                original_idx = text_indices[fetch_idx]
+                text = texts_to_fetch[fetch_idx]
+                embedding = np.array(embedding, dtype=np.float32)
+
+                # Cache result
+                if self.enable_cache:
+                    self.cache.set(text, self.model, embedding)
+
+                results.append((original_idx, EmbeddingResult(
+                    embedding=embedding,
+                    text=text,
+                    model=self.model,
+                    cached=False,
+                    token_count=None,
+                )))
+
+        # Sort back to original order
+        results.sort(key=lambda x: x[0])
+        return [r[1] for r in results]
+
+    def _get_openai_embeddings_batch(self, texts: List[str]) -> List[EmbeddingResult]:
+        """Get embeddings batch from OpenAI API"""
         if len(texts) > 2048:
             raise ValueError(
                 f"Batch size exceeds OpenAI limit: {len(texts)} > 2048. "
@@ -322,29 +428,24 @@ class EmbeddingRetriever:
 
         results = []
         texts_to_fetch = []
-        fetch_indices = []
+        text_indices = {}
 
         # Check cache and identify texts that need to be fetched
         for i, text in enumerate(texts):
-            if not text or not text.strip():
-                raise ValueError(f"Text at index {i} is empty")
-
             if self.enable_cache:
                 cached_embedding = self.cache.get(text, self.model)
                 if cached_embedding is not None:
-                    results.append(
-                        EmbeddingResult(
-                            embedding=cached_embedding,
-                            text=text,
-                            model=self.model,
-                            cached=True,
-                        )
-                    )
+                    results.append((i, EmbeddingResult(
+                        embedding=cached_embedding,
+                        text=text,
+                        model=self.model,
+                        cached=True,
+                    )))
                     continue
 
             # Need to fetch this text
+            text_indices[len(texts_to_fetch)] = i
             texts_to_fetch.append(text)
-            fetch_indices.append(i)
 
         # Fetch uncached texts from API
         if texts_to_fetch:
@@ -354,21 +455,20 @@ class EmbeddingRetriever:
                 )
 
                 # Process results
-                for text, embedding_data in zip(texts_to_fetch, response.data):
+                for fetch_idx, (text, embedding_data) in enumerate(zip(texts_to_fetch, response.data)):
+                    original_idx = text_indices[fetch_idx]
                     embedding = np.array(embedding_data.embedding, dtype=np.float32)
 
                     # Cache result
                     if self.enable_cache:
                         self.cache.set(text, self.model, embedding)
 
-                    results.append(
-                        EmbeddingResult(
-                            embedding=embedding,
-                            text=text,
-                            model=self.model,
-                            cached=False,
-                        )
-                    )
+                    results.append((original_idx, EmbeddingResult(
+                        embedding=embedding,
+                        text=text,
+                        model=self.model,
+                        cached=False,
+                    )))
 
                 # Update statistics
                 self.api_calls += 1
@@ -378,9 +478,8 @@ class EmbeddingRetriever:
                 raise OpenAIError(f"Failed to get batch embeddings: {str(e)}")
 
         # Sort results back to original order
-        results.sort(key=lambda r: texts.index(r.text))
-
-        return results
+        results.sort(key=lambda x: x[0])
+        return [r[1] for r in results]
 
     def get_statistics(self) -> Dict[str, Union[int, float]]:
         """

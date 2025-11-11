@@ -459,6 +459,68 @@ The system is **functional and usable** for production with realistic expectatio
 
 ---
 
+## Optional Next Steps
+
+For further improvements beyond current scope:
+
+### 1. Replace keyword sentiment with NLP model
+- **Current**: Keyword-based detection (simple but limited trigger rate)
+- **Future**: BERT/RoBERTa sentiment analysis for better coverage
+- **Impact**: Higher sentiment amplification trigger rate
+- **Effort**: Medium (integrate transformers model, ~1-2 weeks)
+- **Benefits**:
+  - Catch more nuanced sentiment expressions
+  - Increase amplification rate from 0% to 20-30%
+  - Better handling of negations and context
+
+### 2. Fine-tune embeddings on purchase intent data
+- **Current**: Generic embeddings (75% similarity between opposites)
+- **Future**: Domain-specific fine-tuning on purchase intent corpus
+- **Impact**: Lower similarity between opposite sentiments, better differentiation
+- **Effort**: High (collect data, train model, ~4-6 weeks)
+- **Benefits**:
+  - Reduce opposite sentiment similarity from 75% to <50%
+  - Achieve 2.0+ rating spreads (matching paper's claims)
+  - Purpose-built embeddings for purchase intent domain
+
+### 3. Validate against paper's benchmark surveys
+- **Current**: Tested on synthetic extreme products
+- **Future**: Compare with paper's 57 human surveys (9,300+ responses)
+- **Impact**: Quantify actual ρ and K^xy improvements
+- **Effort**: Low (run comparison scripts, ~1 week)
+- **Benefits**:
+  - Measure actual correlation attainment (ρ)
+  - Validate distribution similarity (K^xy)
+  - Identify which product categories benefit most
+  - Academic validation for publication
+
+### 4. A/B test in production environment
+- **Current**: Offline testing and validation
+- **Future**: Real-world deployment with live surveys
+- **Impact**: Monitor performance on diverse real products
+- **Effort**: Medium (setup monitoring, deploy, ~2-3 weeks)
+- **Benefits**:
+  - Real-world performance metrics
+  - Identify edge cases and failure modes
+  - Compare SSR vs traditional survey costs/speed
+  - Gather production optimization insights
+
+### Priority Recommendation
+
+**Immediate** (if pursuing improvements):
+1. Validate against paper's benchmarks (Low effort, high scientific value)
+2. A/B test in production (Real-world validation)
+
+**Medium-term**:
+3. Replace keyword sentiment with NLP model (Incremental improvement)
+
+**Long-term**:
+4. Fine-tune embeddings (High effort, highest potential impact)
+
+**Note**: These are optional enhancements. The current system (v2.0) is production-ready and provides meaningful differentiation (41x improvement over baseline).
+
+---
+
 **Implementation Date**: 2025-11-11
 **Last Updated**: 2025-11-11
 **Version**: 2.0 (Optimized)
